@@ -5,7 +5,7 @@ import "leaflet/dist/leaflet.css";
 import { routeGeoJSON } from "../_data/routeData";
 import { useEffect, useState } from "react";
 import createCustomMarker from "../utils/customMarker";
-import L, { Icon } from "leaflet";
+import type { Icon } from "leaflet";
 
 // Dynamically import React-Leaflet components (Avoid SSR issues)
 const MapContainer = dynamic(
@@ -33,8 +33,8 @@ const MapComponent = () => {
   const [customMarker, setCustomMarker] = useState<Icon | null>(null);
 
   useEffect(() => {
-    createCustomMarker().then((icon) => {
-      if (icon) setCustomMarker(icon as Icon);
+    void createCustomMarker().then((icon) => {
+      if (icon) setCustomMarker(icon);
     });
   }, []);
 
@@ -78,7 +78,7 @@ const MapComponent = () => {
               ? [marker.geometry.coordinates[1], marker.geometry.coordinates[0]]
               : [0, 0]
           } // Convert [lng, lat] -> [lat, lng]
-          icon={customMarker || undefined} // ✅ Use dynamic marker
+          icon={customMarker ?? undefined} // ✅ Use nullish coalescing to avoid issues
           eventHandlers={{
             click: () => handleMarkerClick(marker.properties.name), // ✅ Log marker click
           }}

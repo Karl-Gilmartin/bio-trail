@@ -3,7 +3,8 @@
 import dynamic from "next/dynamic";
 import "leaflet/dist/leaflet.css";
 import { routeGeoJSON } from "../_data/routeData";
-import { CustomMarkerIcon } from "../utils/customMarker";
+import { useEffect, useState } from "react";
+import createCustomMarker from "../utils/customMarker";
 
 // Dynamically import React-Leaflet components (Avoid SSR issues)
 const MapContainer = dynamic(
@@ -28,6 +29,14 @@ const Polyline = dynamic(
 );
 
 const MapComponent = () => {
+  const [customMarker, setCustomMarker] = useState(null);
+
+  useEffect(() => {
+    createCustomMarker().then((icon) => {
+      setCustomMarker(icon);
+    });
+  }, []);
+
   // Extract route coordinates for polyline
   const routeLine = routeGeoJSON.features.find(
     (feature) => feature.geometry.type === "LineString"
@@ -60,8 +69,15 @@ const MapComponent = () => {
       {markers.map((marker, index) => (
         <Marker
           key={index}
-          position={[marker.geometry.coordinates[1], marker.geometry.coordinates[0]]} // Convert [lng, lat] -> [lat, lng]
-          icon={CustomMarkerIcon} // ✅ Use custom icon
+          position={
+            marker.geometry.coordinates &&
+            marker.geometry.coordinates.length === 2 &&
+            typeof marker.geometry.coordinates[0] === "number" &&
+            typeof marker.geometry.coordinates[1] === "number"
+              ? [marker.geometry.coordinates[1], marker.geometry.coordinates[0]]
+              : [0, 0]
+          } // Convert [lng, lat] -> [lat, lng]
+          icon={customMarker || undefined} // ✅ Use dynamic marker
           eventHandlers={{
             click: () => handleMarkerClick(marker.properties.name), // ✅ Log marker click
           }}
@@ -73,7 +89,7 @@ const MapComponent = () => {
       {/* Render Route from GeoJSON */}
       {routeLine && (
         <Polyline
-          positions={routeLine.geometry.coordinates.map((coord) => [
+          positions={(routeLine.geometry.coordinates as [number, number][]).map((coord) => [
             coord[1],
             coord[0],
           ])} // Convert [lng, lat] -> [lat, lng]

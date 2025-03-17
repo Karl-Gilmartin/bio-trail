@@ -3,9 +3,7 @@ import { type NextRequest, NextResponse } from "next/server";
 import { env } from "~/env";
 import { appRouter } from "~/server/api/root";
 import { createTRPCContext } from "~/server/api/trpc";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { prisma } from "~/server/db";
 
 /**
  * This wraps the `createTRPCContext` helper and provides the required context for the tRPC API when

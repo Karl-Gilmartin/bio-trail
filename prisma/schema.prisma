@@ -18,30 +18,29 @@ model Post {
 }
 
 model University {
-  id          Int      @id @default(autoincrement())
-  name        String   @unique
-  latitude    Float
-  longitude   Float
-  trails      Trail[]  // A university has multiple trails
+  id        Int     @id @default(autoincrement())
+  name      String  @unique
+  latitude  Float
+  longitude Float
+  trails    Trail[]
 }
 
 model Trail {
-  id          Int      @id @default(autoincrement())
-  name        String
-  university  University @relation(fields: [universityId], references: [id], onDelete: Cascade)
+  id           Int        @id @default(autoincrement())
+  name         String
   universityId Int
-  geojson     Json  // Stores the trail path as GeoJSON
-  markers     Marker[] // A trail has multiple markers
+  geojson      Json
+  markers      Marker[]
+  university   University @relation(fields: [universityId], references: [id], onDelete: Cascade)
 }
 
 model Marker {
-  id          Int      @id @default(autoincrement())
+  id          Int    @id @default(autoincrement())
   visibleId   Int?
   name        String
   description String
   latitude    Float
   longitude   Float
-  trail       Trail @relation(fields: [trailId], references: [id], onDelete: Cascade)
   trailId     Int
+  trail       Trail  @relation(fields: [trailId], references: [id], onDelete: Cascade)
 }
-

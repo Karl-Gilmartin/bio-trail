@@ -8,18 +8,27 @@ const UniversityDropdown = ({ onSelect }: { onSelect: (university: string) => vo
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    setLoading(true); // ✅ Ensure loading state starts immediately
+  
     fetch("/api/universities")
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch");
+        return res.json();
+      })
       .then((data) => {
-        setUniversities(data); 
-        setLoading(false);
+        if (Array.isArray(data)) {
+          setUniversities(data); 
+        } else {
+          throw new Error("Invalid data format");
+        }
       })
       .catch((err) => {
         console.error("Error fetching universities:", err);
         setError("Failed to load universities");
-        setLoading(false);
-      });
+      })
+      .finally(() => setLoading(false)); // ✅ Always set loading to false
   }, []);
+  
 
 
   if (loading) return <p>Loading universities...</p>;

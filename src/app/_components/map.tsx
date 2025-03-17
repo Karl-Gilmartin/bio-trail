@@ -21,6 +21,7 @@ interface Route {
 
 interface MarkerData {
   name: string;
+  description: string;
   latitude: number;
   longitude: number;
 }
@@ -49,7 +50,7 @@ export default function MapComponent({ selectedUniversity }: MapComponentProps) 
       .catch((err) => console.error("Error fetching university center:", err));
 
     // Fetch university routes
-    fetch(`/api/universities/routes?name=${selectedUniversity}`)
+    fetch(`/api/universities/trails?name=${selectedUniversity}`)
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {
@@ -57,6 +58,10 @@ export default function MapComponent({ selectedUniversity }: MapComponentProps) 
         }
       })
       .catch((err) => console.error("Error fetching university routes:", err));
+  }, [selectedUniversity]);
+
+  useEffect(() => {
+    if (!selectedUniversity) return;
 
     // Fetch markers for the selected university
     fetch(`/api/universities/markers?name=${selectedUniversity}`)
@@ -94,7 +99,11 @@ export default function MapComponent({ selectedUniversity }: MapComponentProps) 
 
       {/* Render Markers */}
       {markers.map((marker, index) => (
-        <Marker key={index} position={{ lat: marker.latitude, lng: marker.longitude }} />
+        <Marker 
+          key={index} 
+          position={{ lat: marker.latitude, lng: marker.longitude }} 
+          onClick={() => console.log(`Marker Clicked: ${marker.name} - ${marker.description}`)}
+        />
       ))}
     </GoogleMap>
   );

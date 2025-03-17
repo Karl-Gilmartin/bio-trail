@@ -1,74 +1,82 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { GoogleMap, LoadScript, Marker, Polyline } from "@react-google-maps/api";
-import { routeGeoJSON } from "../_data/routeData";
+import { GoogleMap, useLoadScript, Marker, Polyline } from "@react-google-maps/api";
 
 const containerStyle = {
   width: "100%",
   height: "100%",
 };
 
-const center = {
-  lat: 51.505,
-  lng: -0.09,
-};
+interface MapComponentProps {
+  selectedUniversity: string;
+}
 
-const MapComponent = () => {
-  const [googleMapsApiKey, setGoogleMapsApiKey] = useState<string | null>(null);
+export default function MapComponent({ selectedUniversity }: MapComponentProps) {
+  const googleMapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+  const [center, setCenter] = useState({ lat: 51.505, lng: -0.09 });
+  const [routeData, setRouteData] = useState<any>(null);
+
+  const { isLoaded, loadError } = useLoadScript({
+    googleMapsApiKey: googleMapsApiKey || "",
+  });
 
   useEffect(() => {
-    // Fetch API key from environment variables
-    setGoogleMapsApiKey(process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || null);
-  }, []);
+    if (!selectedUniversity) return;
 
-  if (!googleMapsApiKey) {
-    return <p>Loading map...</p>;
-  }
+    // Fetch university center location
+    fetch(`/api/universities/center?name=${selectedUniversity}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data && data.latitude && data.longitude) {
+          setCenter({ lat: data.latitude, lng: data.longitude });
+        }
+      })
+      .catch((err) => console.error("Error fetching university center:", err));
 
-  // Extract route coordinates for polyline
-  const routeLine = routeGeoJSON.features.find(
-    (feature) => feature.geometry.type === "LineString"
-  );
+    // Fetch university routes
+    fetch(`/api/universities/routes?name=${selectedUniversity}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setRouteData(data);
+        }
+      })
+      .catch((err) => console.error("Error fetching university routes:", err));
+  }, [selectedUniversity]);
 
-  // Extract markers
-  const markers = routeGeoJSON.features.filter(
-    (feature) => feature.geometry.type === "Point"
-  );
-
-  // Handle marker click event
-  const handleMarkerClick = (markerName: string) => {
-    console.log(`Selected marker: ${markerName}`);
-  };
+  if (loadError) return <p>Error loading maps</p>;
+  if (!isLoaded) return <p>Loading map...</p>;
 
   return (
-    <LoadScript googleMapsApiKey={googleMapsApiKey}>
-      <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={13}>
-        {/* Render Markers from GeoJSON */}
-        {markers.map((marker, index) => (
-          <Marker
-            key={index}
-            position={{
-              lat: marker.geometry.coordinates[1],
-              lng: marker.geometry.coordinates[0],
-            }}
-            onClick={() => handleMarkerClick(marker.properties.name)}
-          />
-        ))}
-
-        {/* Render Route from GeoJSON */}
-        {routeLine && (
-          <Polyline
-            path={routeLine.geometry.coordinates.map((coord) => ({
-              lat: coord[1],
-              lng: coord[0],
-            }))}
-            options={{ strokeColor: "blue", strokeWeight: 5 }}
-          />
-        )}
-      </GoogleMap>
-    </LoadScript>
+    <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={13}>
+      {/* Render Routes */}
+      {routeData?.map((route: any, index: number) => (
+        route.geojson.features.map((feature: any, featureIndex: number) => {
+          if (feature.geometry.type === "Point") {
+            return (
+              <Marker
+                key={`${index}-${featureIndex}`}
+                position={{
+                  lat: feature.geometry.coordinates[1],
+                  lng: feature.geometry.coordinates[0],
+                }}
+              />
+            );
+          } else if (feature.geometry.type === "LineString") {
+            return (
+              <Polyline
+                key={`${index}-${featureIndex}`}
+                path={feature.geometry.coordinates.map((coord: [number, number]) => ({
+                  lat: coord[1],
+                  lng: coord[0],
+                }))}
+                options={{ strokeColor: "blue", strokeWeight: 5 }}
+              />
+            );
+          }
+        })
+      ))}
+    </GoogleMap>
   );
-};
-
-export default MapComponent;
+}

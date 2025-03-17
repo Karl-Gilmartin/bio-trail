@@ -1,8 +1,13 @@
-import React from "react";
+"use client";
+
+import { useState } from "react";
 import NavBar from "../_components/navbar";
 import MapComponent from "../_components/map";
+import UniversityDropdown from "../_components/university_dropdown";
 
-export default async function ExplorePage() {
+export default function ExplorePage() {
+  const [selectedUniversity, setSelectedUniversity] = useState("");
+
   return (
     <div className="flex flex-col h-screen">
       {/* Navigation Bar */}
@@ -12,24 +17,23 @@ export default async function ExplorePage() {
       <div className="flex flex-1 bg-gray-100 p-6">
         {/* Map Container */}
         <div className="flex-1 h-[500px] bg-gray-300 rounded-lg">
-          <MapComponent />
-          </div>
+          <MapComponent selectedUniversity={selectedUniversity} />
+        </div>
 
         {/* Sidebar */}
         <div className="w-1/3 bg-gray-200 p-6 rounded-lg ml-6">
-          <select className="w-full p-2 mb-4 border rounded">
-            <option value="">Please select your university</option>
-            <option value="uni1">University 1</option>
-            <option value="uni2">University 2</option>
-          </select>
+          <UniversityDropdown onSelect={setSelectedUniversity} />
 
-          <div className="text-lg font-bold">
-            Information about the pins on the map
+          <div className="text-lg font-bold mt-4">
+            {selectedUniversity ? `Selected University: ${selectedUniversity}` : "Select a university to view routes"}
+          </div>
+
+          <div className="mt-4">
+            <h3 className="text-xl font-semibold">Information about the pins on the map</h3>
+            <p>Details will appear here once a university and route are selected.</p>
           </div>
         </div>
       </div>
     </div>
   );
-};
-
-
+}

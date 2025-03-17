@@ -16,3 +16,21 @@ model Post {
 
   @@index([name])
 }
+
+model University {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  latitude    Float
+  longitude   Float
+  routes      Route[]
+}
+
+model Route {
+  id            String   @id @default(uuid())
+  university    University @relation(fields: [universityId], references: [id])
+  universityId  String
+  name          String
+  description   String?
+  geojson       Json // GeoJSON object
+}
+

@@ -50,7 +50,7 @@ export async function DELETE(req: NextRequest) {
 
     if (!id) return NextResponse.json({ error: "Missing university ID" }, { status: 400 });
 
-    await prisma.university.delete({ where: { id } });
+    await prisma.university.delete({ where: { id: Number(id) } });
     return NextResponse.json({ message: "University deleted" });
   } catch (error) {
     return NextResponse.json({ error: "Failed to delete university" }, { status: 500 });

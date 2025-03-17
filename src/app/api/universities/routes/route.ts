@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const routes = await prisma.route.findMany({
+    const routes = await prisma.trail.findMany({
       where: { university: { name: universityName } },
       select: { geojson: true },
     });

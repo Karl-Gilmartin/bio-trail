@@ -12,10 +12,24 @@ interface MapComponentProps {
   selectedUniversity: string;
 }
 
+interface Route {
+  geojson: {
+    type: string;
+    features: { geometry: { type: string; coordinates: [number, number][] } }[];
+  };
+}
+
+interface MarkerData {
+  name: string;
+  latitude: number;
+  longitude: number;
+}
+
 export default function MapComponent({ selectedUniversity }: MapComponentProps) {
   const googleMapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
   const [center, setCenter] = useState({ lat: 51.505, lng: -0.09 });
-  const [routeData, setRouteData] = useState<any>(null);
+  const [routeData, setRouteData] = useState<Route[]>([]);
+  const [markers, setMarkers] = useState<MarkerData[]>([]);
 
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: googleMapsApiKey || "",
@@ -28,7 +42,7 @@ export default function MapComponent({ selectedUniversity }: MapComponentProps) 
     fetch(`/api/universities/center?name=${selectedUniversity}`)
       .then((res) => res.json())
       .then((data) => {
-        if (data && data.latitude && data.longitude) {
+        if (data?.latitude && data?.longitude) {
           setCenter({ lat: data.latitude, lng: data.longitude });
         }
       })
@@ -43,6 +57,16 @@ export default function MapComponent({ selectedUniversity }: MapComponentProps) 
         }
       })
       .catch((err) => console.error("Error fetching university routes:", err));
+
+    // Fetch markers for the selected university
+    fetch(`/api/universities/markers?name=${selectedUniversity}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setMarkers(data);
+        }
+      })
+      .catch((err) => console.error("Error fetching university markers:", err));
   }, [selectedUniversity]);
 
   if (loadError) return <p>Error loading maps</p>;
@@ -51,23 +75,13 @@ export default function MapComponent({ selectedUniversity }: MapComponentProps) 
   return (
     <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={13}>
       {/* Render Routes */}
-      {routeData?.map((route: any, index: number) => (
-        route.geojson.features.map((feature: any, featureIndex: number) => {
-          if (feature.geometry.type === "Point") {
-            return (
-              <Marker
-                key={`${index}-${featureIndex}`}
-                position={{
-                  lat: feature.geometry.coordinates[1],
-                  lng: feature.geometry.coordinates[0],
-                }}
-              />
-            );
-          } else if (feature.geometry.type === "LineString") {
+      {routeData.map((route, index) => (
+        route.geojson.features.map((feature, featureIndex) => {
+          if (feature.geometry.type === "LineString") {
             return (
               <Polyline
                 key={`${index}-${featureIndex}`}
-                path={feature.geometry.coordinates.map((coord: [number, number]) => ({
+                path={feature.geometry.coordinates.map((coord) => ({
                   lat: coord[1],
                   lng: coord[0],
                 }))}
@@ -76,6 +90,11 @@ export default function MapComponent({ selectedUniversity }: MapComponentProps) 
             );
           }
         })
+      ))}
+
+      {/* Render Markers */}
+      {markers.map((marker, index) => (
+        <Marker key={index} position={{ lat: marker.latitude, lng: marker.longitude }} />
       ))}
     </GoogleMap>
   );

@@ -1,42 +1,30 @@
 "use client";
 
-import dynamic from "next/dynamic";
-import "leaflet/dist/leaflet.css";
-import { routeGeoJSON } from "../_data/routeData";
 import { useEffect, useState } from "react";
-import createCustomMarker from "../utils/customMarker";
-import type { Icon } from "leaflet";
+import { GoogleMap, LoadScript, Marker, Polyline } from "@react-google-maps/api";
+import { routeGeoJSON } from "../_data/routeData";
 
-// Dynamically import React-Leaflet components (Avoid SSR issues)
-const MapContainer = dynamic(
-  () => import("react-leaflet").then((mod) => mod.MapContainer),
-  { ssr: false }
-);
-const TileLayer = dynamic(
-  () => import("react-leaflet").then((mod) => mod.TileLayer),
-  { ssr: false }
-);
-const Marker = dynamic(
-  () => import("react-leaflet").then((mod) => mod.Marker),
-  { ssr: false }
-);
-const Popup = dynamic(
-  () => import("react-leaflet").then((mod) => mod.Popup),
-  { ssr: false }
-);
-const Polyline = dynamic(
-  () => import("react-leaflet").then((mod) => mod.Polyline),
-  { ssr: false }
-);
+const containerStyle = {
+  width: "100%",
+  height: "100%",
+};
+
+const center = {
+  lat: 51.505,
+  lng: -0.09,
+};
 
 const MapComponent = () => {
-  const [customMarker, setCustomMarker] = useState<Icon | null>(null);
+  const [googleMapsApiKey, setGoogleMapsApiKey] = useState<string | null>(null);
 
   useEffect(() => {
-    void createCustomMarker().then((icon) => {
-      if (icon) setCustomMarker(icon);
-    });
+    // Fetch API key from environment variables
+    setGoogleMapsApiKey(process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || null);
   }, []);
+
+  if (!googleMapsApiKey) {
+    return <p>Loading map...</p>;
+  }
 
   // Extract route coordinates for polyline
   const routeLine = routeGeoJSON.features.find(
@@ -54,50 +42,32 @@ const MapComponent = () => {
   };
 
   return (
-    <MapContainer
-      center={[51.505, -0.09]}
-      zoom={13}
-      scrollWheelZoom={false}
-      className="h-full w-full rounded-lg"
-    >
-      {/* OpenStreetMap Tile Layer */}
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
+    <LoadScript googleMapsApiKey={googleMapsApiKey}>
+      <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={13}>
+        {/* Render Markers from GeoJSON */}
+        {markers.map((marker, index) => (
+          <Marker
+            key={index}
+            position={{
+              lat: marker.geometry.coordinates[1],
+              lng: marker.geometry.coordinates[0],
+            }}
+            onClick={() => handleMarkerClick(marker.properties.name)}
+          />
+        ))}
 
-      {/* Render Markers from GeoJSON */}
-      {markers.map((marker, index) => (
-        <Marker
-          key={index}
-          position={
-            marker.geometry.coordinates &&
-            marker.geometry.coordinates.length === 2 &&
-            typeof marker.geometry.coordinates[0] === "number" &&
-            typeof marker.geometry.coordinates[1] === "number"
-              ? [marker.geometry.coordinates[1], marker.geometry.coordinates[0]]
-              : [0, 0]
-          } // Convert [lng, lat] -> [lat, lng]
-          icon={customMarker ?? undefined} // ✅ Use nullish coalescing to avoid issues
-          eventHandlers={{
-            click: () => handleMarkerClick(marker.properties.name), // ✅ Log marker click
-          }}
-        >
-          <Popup>{marker.properties.name}</Popup>
-        </Marker>
-      ))}
-
-      {/* Render Route from GeoJSON */}
-      {routeLine && (
-        <Polyline
-          positions={(routeLine.geometry.coordinates as [number, number][]).map((coord) => [
-            coord[1],
-            coord[0],
-          ])} // Convert [lng, lat] -> [lat, lng]
-          pathOptions={{ color: "blue", weight: 5 }}
-        />
-      )}
-    </MapContainer>
+        {/* Render Route from GeoJSON */}
+        {routeLine && (
+          <Polyline
+            path={routeLine.geometry.coordinates.map((coord) => ({
+              lat: coord[1],
+              lng: coord[0],
+            }))}
+            options={{ strokeColor: "blue", strokeWeight: 5 }}
+          />
+        )}
+      </GoogleMap>
+    </LoadScript>
   );
 };
 

@@ -26,13 +26,21 @@ async function main() {
     },
   });
 
+  const UL = await prisma.university.upsert({
+    where: { name: "UL" },
+    update: {},
+    create: {
+      name: "UL",
+      latitude: 52.67368651170915,
+      longitude: -8.571033873679937,
+    },
+  });
+
   console.log("✅ Universities seeded.");
 
   // ✅ Create Trails
-  const harvardTrail = await prisma.trail.upsert({
-    where: { name: "Harvard Nature Walk" },
-    update: {},
-    create: {
+  const harvardTrail = await prisma.trail.create({
+    data: {
       name: "Harvard Nature Walk",
       universityId: harvard.id,
       geojson: {
@@ -54,10 +62,141 @@ async function main() {
     },
   });
 
-  const mitTrail = await prisma.trail.upsert({
-    where: { name: "MIT River Walk" },
-    update: {},
-    create: {
+  const ULTrail = await prisma.trail.create({
+    data: {
+      name: "UL Nature Walk",
+      universityId: UL.id,
+      geojson: {
+        "type": "FeatureCollection",
+        "features": [
+          {
+            "type": "Feature",
+            "properties": {},
+            "geometry": {
+              "coordinates": [
+                [
+                  -8.574931588205516,
+                  52.6723425220284
+                ],
+                [
+                  -8.574116085891404,
+                  52.67251705039487
+                ],
+                [
+                  -8.573044739712685,
+                  52.67256553037342
+                ],
+                [
+                  -8.571189871703695,
+                  52.67270127402631
+                ],
+                [
+                  -8.569830701179228,
+                  52.67284671318609
+                ],
+                [
+                  -8.568199696550096,
+                  52.67302123953857
+                ],
+                [
+                  -8.566888496750494,
+                  52.67316667763379
+                ],
+                [
+                  -8.56610497491937,
+                  52.67320546104344
+                ],
+                [
+                  -8.566232896850295,
+                  52.6737581208981
+                ],
+                [
+                  -8.56610497491937,
+                  52.674427120841756
+                ],
+                [
+                  -8.566168935884377,
+                  52.67474707371534
+                ],
+                [
+                  -8.567608057616695,
+                  52.67439803410036
+                ],
+                [
+                  -8.568615442828559,
+                  52.67433016496281
+                ],
+                [
+                  -8.569191091520963,
+                  52.67457255425643
+                ],
+                [
+                  -8.56920708176196,
+                  52.67477616022376
+                ],
+                [
+                  -8.570358379147677,
+                  52.67472768269877
+                ],
+                [
+                  -8.572293198364463,
+                  52.67465011854645
+                ],
+                [
+                  -8.573044739712685,
+                  52.67488281058971
+                ],
+                [
+                  -8.573956183476582,
+                  52.67488281058971
+                ],
+                [
+                  -8.574435890720082,
+                  52.67473737820782
+                ],
+                [
+                  -8.574435890720082,
+                  52.67452407650552
+                ],
+                [
+                  -8.575507236897892,
+                  52.67407807867113
+                ],
+                [
+                  -8.576466651385772,
+                  52.674145948200305
+                ],
+                [
+                  -8.576370709936924,
+                  52.673602989013006
+                ],
+                [
+                  -8.576338729453937,
+                  52.67309880658277
+                ],
+                [
+                  -8.57590699293445,
+                  52.672691578064814
+                ],
+                [
+                  -8.575363324725032,
+                  52.67251705039487
+                ],
+                [
+                  -8.574787676032685,
+                  52.67238130617022
+                ]
+              ],
+              "type": "LineString"
+            }
+          }
+        ]
+      },
+    },
+  });
+
+  const mitTrail = await prisma.trail.create({
+    data: {
       name: "MIT River Walk",
       universityId: mit.id,
       geojson: {
@@ -87,9 +226,9 @@ async function main() {
       {
         name: "Historic Tree",
         description: "This tree has been standing for over 200 years.",
-        latitude: 42.3735,
-        longitude: -71.1095,
-        trailId: harvardTrail.id,
+        latitude: 52.67443496734407,
+        longitude: -8.568869120679665,
+        trailId: ULTrail.id,
         images: [
           "https://example.com/historic-tree1.jpg",
           "https://example.com/historic-tree2.jpg",
@@ -99,9 +238,9 @@ async function main() {
       {
         name: "River Viewpoint",
         description: "A beautiful view of the Charles River.",
-        latitude: 42.3605,
-        longitude: -71.0945,
-        trailId: mitTrail.id,
+        latitude: 52.67488345889075,
+        longitude: -8.573374999488323,
+        trailId: ULTrail.id,
         images: [
           "https://example.com/river-view1.jpg",
           "https://example.com/river-view2.jpg",
@@ -112,6 +251,47 @@ async function main() {
   });
 
   console.log("✅ Markers with images/videos seeded.");
+
+  // ✅ Create Sample Birds
+  const birds = await prisma.bird.createMany({
+    data: [
+      { name: "American Robin" },
+      { name: "Blue Jay" },
+      { name: "Cardinal" },
+      { name: "Chickadee" },
+      { name: "Red-tailed Hawk" },
+    ],
+    skipDuplicates: true,
+  });
+
+  console.log("✅ Birds seeded.");
+
+  // ✅ Create Sample Bird Sightings
+  const robin = await prisma.bird.findFirst({ where: { name: "American Robin" } });
+  const blueJay = await prisma.bird.findFirst({ where: { name: "Blue Jay" } });
+
+  if (robin && blueJay) {
+    await prisma.birdSighting.createMany({
+      data: [
+        {
+          birdId: robin.id,
+          universityId: UL.id,
+          latitude: 52.67443496734407,
+          longitude: -8.568869120679665,
+          notes: "Spotted near the historic tree",
+        },
+        {
+          birdId: blueJay.id,
+          universityId: UL.id,
+          latitude: 52.67488345889075,
+          longitude: -8.573374999488323,
+          notes: "Seen at the river viewpoint",
+        },
+      ],
+    });
+  }
+
+  console.log("✅ Bird sightings seeded.");
 }
 
 main()

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { GoogleMap, useLoadScript, Marker, Polyline } from "@react-google-maps/api";
+import { api } from "~/trpc/react";
 
 const containerStyle = {
   width: "100%",
@@ -12,11 +13,20 @@ interface MapComponentProps {
   selectedUniversity: string;
 }
 
-interface Route {
-  geojson: {
+interface GeoJSONFeature {
+  geometry: {
     type: string;
-    features: { geometry: { type: string; coordinates: [number, number][] } }[];
+    coordinates: [number, number][];
   };
+}
+
+interface GeoJSON {
+  type: string;
+  features: GeoJSONFeature[];
+}
+
+interface Route {
+  geojson: GeoJSON;
 }
 
 interface MarkerData {
@@ -36,43 +46,58 @@ export default function MapComponent({ selectedUniversity }: MapComponentProps) 
     googleMapsApiKey: googleMapsApiKey || "",
   });
 
+  // Fetch university center location
+  const { data: centerData } = api.university.getCenter.useQuery(
+    { name: selectedUniversity },
+    { enabled: !!selectedUniversity }
+  );
+
+  // Fetch university markers
+  const { data: markersData } = api.university.getMarkers.useQuery(
+    { name: selectedUniversity },
+    { enabled: !!selectedUniversity }
+  );
+
+  // Fetch university trails
+  const { data: universityData } = api.university.getByName.useQuery(
+    { name: selectedUniversity },
+    { enabled: !!selectedUniversity }
+  );
+
+  // Update center when data changes
   useEffect(() => {
-    if (!selectedUniversity) return;
+    if (centerData?.data) {
+      setCenter({ 
+        lat: centerData.data.latitude, 
+        lng: centerData.data.longitude 
+      });
+    }
+  }, [centerData]);
 
-    // Fetch university center location
-    fetch(`/api/universities/center?name=${selectedUniversity}`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (data?.latitude && data?.longitude) {
-          setCenter({ lat: data.latitude, lng: data.longitude });
-        }
-      })
-      .catch((err) => console.error("Error fetching university center:", err));
-
-    // Fetch university routes
-    fetch(`/api/universities/trails?name=${selectedUniversity}`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (Array.isArray(data)) {
-          setRouteData(data);
-        }
-      })
-      .catch((err) => console.error("Error fetching university routes:", err));
-  }, [selectedUniversity]);
-
+  // Update markers when data changes
   useEffect(() => {
-    if (!selectedUniversity) return;
+    if (markersData?.data) {
+      setMarkers(markersData.data);
+    }
+  }, [markersData]);
 
-    // Fetch markers for the selected university
-    fetch(`/api/universities/markers?name=${selectedUniversity}`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (Array.isArray(data)) {
-          setMarkers(data);
-        }
-      })
-      .catch((err) => console.error("Error fetching university markers:", err));
-  }, [selectedUniversity]);
+  // Update routes when data changes
+  useEffect(() => {
+    if (universityData?.data?.trails) {
+      const routes = universityData.data.trails
+        .map(trail => {
+          const geojson = trail.geojson as unknown as GeoJSON;
+          if (!geojson?.type || !geojson?.features) {
+            console.warn('Invalid GeoJSON data:', trail.geojson);
+            return null;
+          }
+          return { geojson };
+        })
+        .filter((route): route is Route => route !== null);
+      
+      setRouteData(routes);
+    }
+  }, [universityData]);
 
   if (loadError) return <p>Error loading maps</p>;
   if (!isLoaded) return <p>Loading map...</p>;

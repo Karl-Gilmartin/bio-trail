@@ -21,6 +21,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@intercom/messenger-js-sdk": "^0.0.14",
     "@prisma/client": "^6.5.0",
     "@react-google-maps/api": "^2.20.6",
     "@t3-oss/env-nextjs": "^0.10.1",

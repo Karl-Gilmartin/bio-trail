@@ -88,7 +88,7 @@ export default function BirdSightingsPage() {
     if (
       typeof latitude !== "number" ||
       typeof longitude !== "number" ||
-      !universityData?.id
+      !universityData?.data.id
     ) {
       setLocationError("Missing location or university info.");
       return;
@@ -100,7 +100,7 @@ export default function BirdSightingsPage() {
       let birdId = selectedBirdId;
       if (!birdId && newBirdName) {
         const newBird = await createBird.mutateAsync({ name: newBirdName });
-        birdId = newBird.id;
+        birdId = newBird.data.id;
       }
 
       if (!birdId) return;
@@ -109,7 +109,7 @@ export default function BirdSightingsPage() {
 
       await recordSighting.mutateAsync({
         birdId,
-        universityId: universityData.id,
+        universityId: universityData.data.id,
         latitude,
         longitude,
         imageUrl,
@@ -171,7 +171,7 @@ export default function BirdSightingsPage() {
               className="w-full border p-2 rounded"
             >
               <option value="">Select existing bird</option>
-              {birdsData?.map((b) => (
+              {birdsData?.data.map((b) => (
                 <option key={b.id} value={b.id}>
                   {b.name}
                 </option>

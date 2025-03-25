@@ -5,6 +5,7 @@ import NavBar from "../_components/navbar";
 import MapComponent from "../_components/map";
 import UniversityDropdown from "../_components/university_dropdown";
 import TrailDropdown from "../_components/trail_dropdown";
+import TrailInfo from "../_components/trail_info";
 
 export default function ExplorePage() {
   const [selectedUniversity, setSelectedUniversity] = useState("");
@@ -36,14 +37,10 @@ export default function ExplorePage() {
               : "Select a university to view routes"}
           </div>
 
-          <div className="mt-6">
-            <h3 className="text-xl font-bold text-gray-900 mb-2">
-              Map Information
-            </h3>
-            <p className="text-gray-600 text-sm leading-relaxed">
-              Details will appear here once a university and route are selected.
-            </p>
-          </div>
+          <TrailInfo 
+            selectedTrail={selectedTrail}
+            selectedUniversity={selectedUniversity}
+          />
         </div>
       </div>
     </div>

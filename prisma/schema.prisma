@@ -32,6 +32,7 @@ model Trail {
   universityId Int
   geojson      Json
   markers      Marker[]
+  description  String
   university   University @relation(fields: [universityId], references: [id], onDelete: Cascade)
 }
 

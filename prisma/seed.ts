@@ -42,6 +42,7 @@ async function main() {
   const harvardTrail = await prisma.trail.create({
     data: {
       name: "Harvard Nature Walk",
+      description: "A beautiful walk along the Harvard Nature Walk in Cambridge, Massachusetts. This trail is a great way to explore the natural beauty of the area. It is a 2.5km loop trail that takes approximately 1 hour to complete. It is a great way to explore the natural beauty of the area.",
       universityId: harvard.id,
       geojson: {
         type: "FeatureCollection",
@@ -65,6 +66,7 @@ async function main() {
   const ULTrail = await prisma.trail.create({
     data: {
       name: "UL Nature Walk",
+      description: "A beautiful walk along the UL Nature Walk in Limerick, Ireland. This trail is a great way to explore the natural beauty of the area. It is a 2.5km loop trail that takes approximately 1 hour to complete. It is a great way to explore the natural beauty of the area.",
       universityId: UL.id,
       geojson: {
         "type": "FeatureCollection",
@@ -198,6 +200,7 @@ async function main() {
   const mitTrail = await prisma.trail.create({
     data: {
       name: "MIT River Walk",
+      description: "A beautiful walk along the Charles River",
       universityId: mit.id,
       geojson: {
         type: "FeatureCollection",

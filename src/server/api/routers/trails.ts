@@ -17,6 +17,7 @@ export const trailsRouter = createTRPCRouter({
         },
       });
 
+      console.log('Trails for university:', JSON.stringify(trails, null, 2));
       return { success: true, data: trails };
     }),
 
@@ -31,6 +32,8 @@ export const trailsRouter = createTRPCRouter({
         },
       });
 
+      console.log('Trail by ID:', JSON.stringify(trail, null, 2));
+
       if (!trail) throw new Error("Trail not found");
 
       return { success: true, data: trail };
@@ -42,6 +45,7 @@ export const trailsRouter = createTRPCRouter({
       name: z.string().min(1),
       universityId: z.number(),
       geojson: z.any(), // You might want to define a more specific type for this
+      description: z.string(),
     }))
     .mutation(async ({ ctx, input }) => {
       const trail = await ctx.prisma.trail.create({
@@ -49,6 +53,7 @@ export const trailsRouter = createTRPCRouter({
           name: input.name,
           universityId: input.universityId,
           geojson: input.geojson,
+          description: input.description,
         },
       });
 

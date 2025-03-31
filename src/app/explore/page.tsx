@@ -6,7 +6,8 @@ import MapComponent from "../_components/map";
 import UniversityDropdown from "../_components/university_dropdown";
 import TrailDropdown from "../_components/trail_dropdown";
 import TrailInfo from "../_components/trail_info";
-
+import DottedBackground from "../_components/dotted_background";
+import Footer from "../_components/footer";
 export default function ExplorePage() {
   const [selectedUniversity, setSelectedUniversity] = useState("");
   const [selectedTrail, setSelectedTrail] = useState("");
@@ -15,9 +16,10 @@ export default function ExplorePage() {
     <div className="flex flex-col min-h-screen">
       {/* Navigation Bar */}
       <NavBar />
+      <DottedBackground />
 
       {/* Main Content */}
-      <div className="flex flex-col md:flex-row flex-1 bg-gray-50 p-4 gap-4">
+      <div className="flex flex-col md:flex-row flex-1  p-4 gap-4">
         {/* Map Section */}
         <div className="flex-1 h-[300px] md:h-auto md:min-h-full bg-white rounded-2xl shadow-md overflow-hidden">
           <MapComponent selectedUniversity={selectedUniversity} />
@@ -43,6 +45,7 @@ export default function ExplorePage() {
           />
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

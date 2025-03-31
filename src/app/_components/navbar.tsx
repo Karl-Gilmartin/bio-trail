@@ -44,6 +44,9 @@ const NavBar: React.FC = () => {
           {/* Desktop Menu */}
           <ul className="hidden md:flex space-x-10 text-lg">
             <li>
+              <Link href="/" className="text-white transition-all duration-300 hover:text-darkSlateGray hover:font-bold hover:scale-105">Home</Link>
+            </li>
+            <li>
               <Link href="/explore" className="text-white transition-all duration-300 hover:text-darkSlateGray hover:font-bold hover:scale-105">Explore</Link>
             </li>
             <li>

@@ -5,7 +5,8 @@ import { api } from "~/trpc/react";
 import { toast } from "sonner";
 import NavBar from "../_components/navbar";
 import { FaFileDownload } from "react-icons/fa";
-
+import DottedBackground from "../_components/dotted_background";
+import Footer from "../_components/footer";
 export default function ContactPage() {
   const [formData, setFormData] = useState({
     name: "",
@@ -40,6 +41,7 @@ export default function ContactPage() {
 
   return (
     <div className="flex flex-col min-h-screen">
+      <DottedBackground />
       <NavBar />
       <main className="flex-1 container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
@@ -182,6 +184,7 @@ export default function ContactPage() {
           </div>
         </div>
       </main>
+      <Footer />
     </div>
   );
 }

@@ -7,6 +7,7 @@ import UniversityDropdown from "../_components/university_dropdown";
 import { uploadImage } from "../utils/upload";
 import Footer from "../_components/footer";
 import { FaInfoCircle, FaMapMarkerAlt, FaCamera, FaUpload } from "react-icons/fa";
+import DottedBackground from "../_components/dotted_background";
 
 export default function BirdSightingsPage() {
   const [selectedUniversity, setSelectedUniversity] = useState("");
@@ -124,8 +125,9 @@ export default function BirdSightingsPage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50">
+    <div className="flex flex-col min-h-screen ">
       <NavBar />
+      <DottedBackground />
       <main className="flex-1 container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto">
           <div className="bg-white rounded-lg shadow-md p-6 md:p-8">

@@ -4,6 +4,8 @@ import { useState } from "react";
 import { api } from "~/trpc/react";
 import NavBar from "../_components/navbar";
 import UniversityDropdown from "../_components/university_dropdown";
+import DottedBackground from "../_components/dotted_background";
+import Footer from "../_components/footer";
 
 export default function SightingsPage() {
   const [selectedUniversity, setSelectedUniversity] = useState("");
@@ -37,7 +39,8 @@ export default function SightingsPage() {
   return (
     <div className="flex flex-col min-h-screen">
       <NavBar />
-      <main className="flex-1 container mx-auto px-4 py-8">
+      <DottedBackground />
+      <main className="flex-1 container mx-auto px-20 py-8 bg-white rounded-lg shadow-md my-10">
         <h1 className="text-3xl font-bold mb-8">Bird Sightings</h1>
         
         <div className="mb-8 space-y-4">
@@ -157,6 +160,7 @@ export default function SightingsPage() {
           </div>
         )}
       </main>
+      <Footer />
     </div>
   );
 }

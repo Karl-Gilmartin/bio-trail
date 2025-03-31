@@ -23,6 +23,7 @@
   "dependencies": {
     "@intercom/messenger-js-sdk": "^0.0.14",
     "@prisma/client": "^6.5.0",
+    "@radix-ui/react-slot": "^1.1.2",
     "@react-google-maps/api": "^2.20.6",
     "@t3-oss/env-nextjs": "^0.10.1",
     "@tanstack/react-query": "^5.50.0",
@@ -37,6 +38,7 @@
     "react-icons": "^5.5.0",
     "react-leaflet": "^5.0.0-rc.2",
     "server-only": "^0.0.1",
+    "sonner": "^2.0.2",
     "superjson": "^2.2.1",
     "zod": "^3.23.3"
   },

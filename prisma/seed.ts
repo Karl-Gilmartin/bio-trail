@@ -295,6 +295,20 @@ async function main() {
   }
 
   console.log("✅ Bird sightings seeded.");
+
+  // ✅ Create Sample Messages
+  await prisma.message.createMany({
+    data: [
+      {
+        name: "John Doe",
+        email: "john.doe@example.com",
+        subject: "Hello",
+        message: "This is a test message",
+      },
+    ],
+  });
+
+  console.log("✅ Messages seeded.");
 }
 
 main()

@@ -11,6 +11,7 @@ export const appRouter = createTRPCRouter({
   university: routers.university,
   trail: routers.trail,
   birds: routers.birds,
+  messages: routers.messages,
 });
 
 // export type definition of API

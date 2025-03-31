@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { api } from "~/trpc/react";
+import { toast } from "sonner";
 import NavBar from "../_components/navbar";
 import { FaFileDownload } from "react-icons/fa";
 
@@ -8,20 +10,32 @@ export default function ContactPage() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    subject: "",
     message: "",
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const createMessage = api.messages.create.useMutation({
+    onSuccess: () => {
+      toast.success("Message sent successfully!");
+      setFormData({ name: "", email: "", subject: "", message: "" });
+    },
+    onError: (error) => {
+      console.error('Error sending message:', error);
+      toast.error(error.message || "Failed to send message");
+    },
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement form submission
-    console.log("Form submitted:", formData);
-    // Reset form
-    setFormData({ name: "", email: "", message: "" });
+    console.log('Submitting form with data:', formData);
+    createMessage.mutate(formData);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   return (
@@ -89,7 +103,10 @@ export default function ContactPage() {
               <h2 className="text-2xl font-semibold mb-6">Send us a Message</h2>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="name"
+                    className="mb-2 block text-sm font-medium text-gray-700"
+                  >
                     Name
                   </label>
                   <input
@@ -99,11 +116,14 @@ export default function ContactPage() {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-cambridgeBlue focus:border-transparent"
+                    className="w-full rounded-md border border-gray-300 p-2"
                   />
                 </div>
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="email"
+                    className="mb-2 block text-sm font-medium text-gray-700"
+                  >
                     Email
                   </label>
                   <input
@@ -113,11 +133,31 @@ export default function ContactPage() {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-cambridgeBlue focus:border-transparent"
+                    className="w-full rounded-md border border-gray-300 p-2"
                   />
                 </div>
                 <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="subject"
+                    className="mb-2 block text-sm font-medium text-gray-700"
+                  >
+                    Subject
+                  </label>
+                  <input
+                    type="text"
+                    id="subject"
+                    name="subject"
+                    value={formData.subject}
+                    onChange={handleChange}
+                    required
+                    className="w-full rounded-md border border-gray-300 p-2"
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="message"
+                    className="mb-2 block text-sm font-medium text-gray-700"
+                  >
                     Message
                   </label>
                   <textarea
@@ -127,14 +167,15 @@ export default function ContactPage() {
                     onChange={handleChange}
                     required
                     rows={4}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-cambridgeBlue focus:border-transparent"
+                    className="w-full rounded-md border border-gray-300 p-2"
                   />
                 </div>
                 <button
                   type="submit"
-                  className="w-full bg-cambridgeBlue text-white py-2 px-4 rounded-md hover:bg-darkSlateGray transition-colors duration-200"
+                  disabled={createMessage.isPending}
+                  className="w-full bg-cambridgeBlue text-white py-2 px-4 rounded-md hover:bg-darkSlateGray transition-colors duration-200 disabled:opacity-50"
                 >
-                  Send Message
+                  {createMessage.isPending ? "Sending..." : "Send Message"}
                 </button>
               </form>
             </div>

@@ -329,9 +329,9 @@ function MarkerForm({ pin }: { pin: string }) {
       <button
         type="submit"
         className="w-full bg-cambridgeBlue text-white py-2 rounded hover:bg-darkSlateGray transition-colors"
-        disabled={createMarker.isPening}
+        disabled={createMarker.isPending}
       >
-        {createMarker.isLoading ? "Creating..." : "Create Marker"}
+        {createMarker.isPending ? "Creating..." : "Create Marker"}
       </button>
     </form>
   );

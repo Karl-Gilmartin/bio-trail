@@ -70,7 +70,7 @@ export default function BirdSightingsPage() {
     enabled: !!selectedUniversity,
   });
 
-  const { data: universityData } = api.university.getByName.useQuery(
+  const { data: universityData } = api.universities.getByName.useQuery(
     { name: selectedUniversity },
     { enabled: !!selectedUniversity }
   );

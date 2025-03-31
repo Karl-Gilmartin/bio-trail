@@ -13,7 +13,7 @@ export default function SightingsPage() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   // Get university ID from name
-  const { data: universityData } = api.university.getByName.useQuery(
+  const { data: universityData } = api.universities.getByName.useQuery(
     { name: selectedUniversity },
     { enabled: !!selectedUniversity }
   );

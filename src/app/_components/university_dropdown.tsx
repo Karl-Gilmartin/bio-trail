@@ -3,7 +3,7 @@
 import { api } from "~/trpc/react";
 
 const UniversityDropdown = ({ onSelect }: { onSelect: (university: string) => void }) => {
-  const { data, isLoading, error } = api.university.getAll.useQuery();
+  const { data, isLoading, error } = api.universities.getAll.useQuery();
 
   if (isLoading) return <p>Loading universities...</p>;
   if (error) return <p>Error loading universities</p>;

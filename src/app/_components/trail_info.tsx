@@ -24,7 +24,7 @@ const TrailInfo = ({ selectedTrail, selectedUniversity }: TrailInfoProps) => {
   
   console.log('Selected Trail ID:', trailId);
   
-  const { data: trailResponse, isLoading } = api.trail.getById.useQuery(
+  const { data: trailResponse, isLoading } = api.trails.getById.useQuery(
     { id: trailId ?? 0 },
     { 
       enabled: !!trailId && !isNaN(trailId),

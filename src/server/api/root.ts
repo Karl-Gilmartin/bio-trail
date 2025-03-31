@@ -6,6 +6,7 @@ import { trailsRouter } from "~/server/api/routers/trails";
 import { birdsRouter } from "~/server/api/routers/birds";
 import { messagesRouter } from "~/server/api/routers/messages";
 import { blogsRouter } from "~/server/api/routers/blogs";
+import { creationRouter } from "./routers/creation";
 
 /**
  * This is the primary router for your server.
@@ -19,6 +20,7 @@ export const appRouter = createTRPCRouter({
   birds: birdsRouter,
   messages: messagesRouter,
   blogs: blogsRouter,
+  creation: creationRouter,
 });
 
 // export type definition of API

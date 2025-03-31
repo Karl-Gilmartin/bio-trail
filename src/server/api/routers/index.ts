@@ -3,11 +3,13 @@ import { universitiesRouter } from "./universities";
 import { trailsRouter } from "./trails";
 import { birdsRouter } from "./birds";
 import { messagesRouter } from "./messages";
+import { creationRouter } from "./creation"; 
 
 export const routers = {
   post: postRouter,
-  university: universitiesRouter,
-  trail: trailsRouter,
+  universities: universitiesRouter,
+  trails: trailsRouter,
   birds: birdsRouter,
   messages: messagesRouter,
+  creation: creationRouter,
 }; 

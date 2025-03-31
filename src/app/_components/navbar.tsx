@@ -59,6 +59,9 @@ const NavBar: React.FC = () => {
               <Link href="/sightings" className="text-white transition-all duration-300 hover:text-darkSlateGray hover:font-bold hover:scale-105">View Sightings</Link>
             </li>
             <li>
+              <Link href="/create_your_trail" className="text-white transition-all duration-300 hover:text-darkSlateGray hover:font-bold hover:scale-105">Create Your Trail</Link>
+            </li>
+            <li>
               <Link href="/contact" className="text-white bg-darkSlateGray rounded-xl p-3 transition-all duration-300 hover:text-darkSlateGray hover:font-bold hover:scale-105 hover:bg-white">Contact</Link>
             </li>
           </ul>

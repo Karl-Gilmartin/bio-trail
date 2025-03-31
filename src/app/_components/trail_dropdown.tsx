@@ -9,7 +9,7 @@ const TrailDropdown = ({
   onSelect: (trail: string) => void;
   selectedUniversity: string;
 }) => {
-  const { data, isLoading, error } = api.trail.getByUniversity.useQuery({ 
+  const { data, isLoading, error } = api.trails.getByUniversity.useQuery({ 
     universityName: selectedUniversity 
   }, {
     enabled: !!selectedUniversity

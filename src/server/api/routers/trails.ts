@@ -87,4 +87,14 @@ export const trailsRouter = createTRPCRouter({
 
       return { success: true, message: "Trail deleted" };
     }),
+
+  getByUniversityId: publicProcedure
+    .input(z.object({ universityId: z.number() }))
+    .query(async ({ ctx, input }) => {
+      const trails = await ctx.prisma.trail.findMany({
+        where: { universityId: input.universityId },
+        orderBy: { name: 'asc' },
+      });
+      return { success: true, data: trails };
+    }),
 }); 

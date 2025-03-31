@@ -47,19 +47,19 @@ export default function MapComponent({ selectedUniversity }: MapComponentProps) 
   });
 
   // Fetch university center location
-  const { data: centerData } = api.university.getCenter.useQuery(
+  const { data: centerData } = api.universities.getCenter.useQuery(
     { name: selectedUniversity },
     { enabled: !!selectedUniversity }
   );
 
   // Fetch university markers
-  const { data: markersData } = api.university.getMarkers.useQuery(
+  const { data: markersData } = api.universities.getMarkers.useQuery(
     { name: selectedUniversity },
     { enabled: !!selectedUniversity }
   );
 
   // Fetch university trails
-  const { data: universityData } = api.university.getByName.useQuery(
+  const { data: universityData } = api.universities.getByName.useQuery(
     { name: selectedUniversity },
     { enabled: !!selectedUniversity }
   );

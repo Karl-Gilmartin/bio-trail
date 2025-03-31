@@ -44,19 +44,16 @@ const NavBar: React.FC = () => {
           {/* Desktop Menu */}
           <ul className="hidden md:flex space-x-10 text-lg">
             <li>
-              <Link href="/about" className="text-white transition-all duration-300 hover:text-darkSlateGray hover:font-bold hover:scale-105">About</Link>
-            </li>
-            <li>
               <Link href="/explore" className="text-white transition-all duration-300 hover:text-darkSlateGray hover:font-bold hover:scale-105">Explore</Link>
             </li>
             <li>
               <Link href="/blog" className="text-white transition-all duration-300 hover:text-darkSlateGray hover:font-bold hover:scale-105">Blog</Link>
             </li>
             <li>
-              <Link href="/birds" className="text-white bg-darkSlateGray rounded-xl p-3 transition-all duration-300 hover:text-darkSlateGray hover:font-bold hover:scale-105 hover:bg-white">Record Sighting</Link>
+              <Link href="/birds" className="text-white transition-all duration-300 hover:text-darkSlateGray hover:font-bold hover:scale-105">Record Sighting</Link>
             </li>
             <li>
-              <Link href="/sightings" className="text-white bg-darkSlateGray rounded-xl p-3 transition-all duration-300 hover:text-darkSlateGray hover:font-bold hover:scale-105 hover:bg-white">View Sightings</Link>
+              <Link href="/sightings" className="text-white transition-all duration-300 hover:text-darkSlateGray hover:font-bold hover:scale-105">View Sightings</Link>
             </li>
             <li>
               <Link href="/contact" className="text-white bg-darkSlateGray rounded-xl p-3 transition-all duration-300 hover:text-darkSlateGray hover:font-bold hover:scale-105 hover:bg-white">Contact</Link>

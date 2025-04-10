@@ -38,7 +38,7 @@ interface MarkerData {
 
 export default function MapComponent({ selectedUniversity }: MapComponentProps) {
   const googleMapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-  const [center, setCenter] = useState({ lat: 51.505, lng: -0.09 });
+  const [center, setCenter] = useState({ lat:53.347274403672664, lng:-6.259284295151906 });
   const [routeData, setRouteData] = useState<Route[]>([]);
   const [markers, setMarkers] = useState<MarkerData[]>([]);
 

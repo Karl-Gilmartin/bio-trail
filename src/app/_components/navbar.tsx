@@ -72,15 +72,6 @@ const NavBar: React.FC = () => {
           <ul className="pt-4 space-y-4">
             <li>
               <Link 
-                href="/about" 
-                className="block text-white transition-all duration-300 hover:text-darkSlateGray hover:font-bold"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                About
-              </Link>
-            </li>
-            <li>
-              <Link 
                 href="/explore" 
                 className="block text-white transition-all duration-300 hover:text-darkSlateGray hover:font-bold"
                 onClick={() => setIsMenuOpen(false)}
@@ -100,7 +91,7 @@ const NavBar: React.FC = () => {
             <li>
               <Link 
                 href="/birds" 
-                className="block text-white bg-darkSlateGray rounded-xl p-3 transition-all duration-300 hover:text-darkSlateGray hover:font-bold hover:bg-white"
+                className="block text-white transition-all duration-300 hover:text-darkSlateGray hover:font-bold"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Record Sighting
@@ -109,10 +100,19 @@ const NavBar: React.FC = () => {
             <li>
               <Link 
                 href="/sightings" 
-                className="block text-white bg-darkSlateGray rounded-xl p-3 transition-all duration-300 hover:text-darkSlateGray hover:font-bold hover:bg-white"
+                className="block text-white transition-all duration-300 hover:text-darkSlateGray hover:font-bold"
                 onClick={() => setIsMenuOpen(false)}
               >
                 View Sightings
+              </Link>
+            </li>
+            <li>
+              <Link 
+                href="/create_your_trail" 
+                className="block text-white transition-all duration-300 hover:text-darkSlateGray hover:font-bold"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Create Your Trail
               </Link>
             </li>
             <li>

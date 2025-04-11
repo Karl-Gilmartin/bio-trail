@@ -2,11 +2,60 @@
 
 import { useEffect, useState } from "react";
 import { api } from "~/trpc/react";
+import { ImageIcon, X } from "lucide-react";
+import Image from "next/image";
+import { getMarkerImageUrl } from "~/app/utils/getImage";
 
 interface TrailInfoProps {
   selectedTrail: string;
   selectedUniversity: string;
 }
+
+interface ImageModalProps {
+  imageUrl: string;
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const ImageModal = ({ imageUrl, isOpen, onClose }: ImageModalProps) => {
+  if (!isOpen) return null;
+
+  // Check if the URL is valid
+  const isValidUrl = imageUrl && imageUrl.startsWith('http');
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4" onClick={onClose}>
+      <div className="relative max-w-4xl max-h-[90vh] w-full">
+        {/* Close button */}
+        <button 
+          onClick={(e) => {
+            e.stopPropagation();
+            onClose();
+          }}
+          className="absolute top-2 right-2 bg-white rounded-full p-2 shadow-md z-10 hover:bg-gray-100 transition-colors"
+          aria-label="Close modal"
+        >
+          <X className="w-5 h-5 text-gray-700" />
+        </button>
+        
+        {isValidUrl ? (
+          <Image
+            src={imageUrl}
+            alt="Marker image"
+            width={1200}
+            height={800}
+            className="object-contain w-full h-full"
+            onClick={(e) => e.stopPropagation()}
+          />
+        ) : (
+          <div className="bg-gray-100 p-8 rounded-lg text-center">
+            <p className="text-gray-500">Image not available</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
 
 const TrailInfo = ({ selectedTrail, selectedUniversity }: TrailInfoProps) => {
   const [trailData, setTrailData] = useState<{
@@ -15,10 +64,11 @@ const TrailInfo = ({ selectedTrail, selectedUniversity }: TrailInfoProps) => {
     markers: Array<{
       name: string;
       description: string;
-      images: string[];
+      imagePaths: string[];
       videos: string[];
     }>;
   } | null>(null);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const trailId = selectedTrail ? parseInt(selectedTrail) : null;
   
@@ -40,12 +90,25 @@ const TrailInfo = ({ selectedTrail, selectedUniversity }: TrailInfoProps) => {
       setTrailData({
         name: trailResponse.data.name,
         description: trailResponse.data.description,
-        markers: trailResponse.data.markers,
+        markers: trailResponse.data.markers.map(marker => ({
+          name: marker.name,
+          description: marker.description,
+          imagePaths: marker.imagePaths,
+          videos: marker.videos,
+        })),
       });
     } else {
       setTrailData(null);
     }
   }, [trailResponse]);
+
+  // Add debugging for image paths
+  const handleImageClick = (imagePath: string) => {
+    console.log('Image path:', imagePath);
+    const imageUrl = getMarkerImageUrl(imagePath);
+    console.log('Generated URL:', imageUrl);
+    setSelectedImage(imageUrl);
+  };
 
   if (!selectedTrail || !selectedUniversity) {
     return (
@@ -89,15 +152,16 @@ const TrailInfo = ({ selectedTrail, selectedUniversity }: TrailInfoProps) => {
               <div key={index} className="bg-gray-50 p-4 rounded-lg">
                 <h5 className="font-medium text-gray-900">{marker.name}</h5>
                 <p className="text-sm text-gray-600 mt-1">{marker.description}</p>
-                {marker.images.length > 0 && (
+                {marker.imagePaths && marker.imagePaths.length > 0 && (
                   <div className="mt-2 flex gap-2">
-                    {marker.images.map((image, imgIndex) => (
-                      <img
+                    {marker.imagePaths.map((imagePath, imgIndex) => (
+                      <button
                         key={imgIndex}
-                        src={image}
-                        alt={`${marker.name} - Image ${imgIndex + 1}`}
-                        className="w-20 h-20 object-cover rounded"
-                      />
+                        onClick={() => handleImageClick(imagePath)}
+                        className="p-2 hover:bg-gray-200 rounded-full transition-colors"
+                      >
+                        <ImageIcon className="w-5 h-5 text-gray-600" />
+                      </button>
                     ))}
                   </div>
                 )}
@@ -106,6 +170,12 @@ const TrailInfo = ({ selectedTrail, selectedUniversity }: TrailInfoProps) => {
           </div>
         </div>
       )}
+
+      <ImageModal
+        imageUrl={selectedImage ?? ""}
+        isOpen={!!selectedImage}
+        onClose={() => setSelectedImage(null)}
+      />
     </div>
   );
 };

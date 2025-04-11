@@ -44,7 +44,7 @@ model Marker {
   description String
   latitude    Float
   longitude   Float
-  images      String[]  // Store multiple image URLs
+  imagePaths  String[]  // Store image paths in Supabase storage
   videos      String[]  // Store multiple video URLs
   createdAt   DateTime @default(now())
 

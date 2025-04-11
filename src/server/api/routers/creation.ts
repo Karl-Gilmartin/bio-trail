@@ -116,7 +116,7 @@ export const creationRouter = createTRPCRouter({
           description: input.description,
           latitude: input.latitude,
           longitude: input.longitude,
-          images: input.images ?? [],
+          imagePaths: input.images ?? [],
           videos: input.videos ?? [],
         },
       });

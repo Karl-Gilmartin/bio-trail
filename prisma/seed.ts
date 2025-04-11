@@ -232,9 +232,9 @@ async function main() {
         latitude: 52.67443496734407,
         longitude: -8.568869120679665,
         trailId: ULTrail.id,
-        images: [
-          "https://example.com/historic-tree1.jpg",
-          "https://example.com/historic-tree2.jpg",
+        imagePaths: [
+          "historic-tree1.jpg",
+          "historic-tree2.jpg",
         ],
         videos: ["https://example.com/historic-tree.mp4"],
       },
@@ -244,9 +244,9 @@ async function main() {
         latitude: 52.67488345889075,
         longitude: -8.573374999488323,
         trailId: ULTrail.id,
-        images: [
-          "https://example.com/river-view1.jpg",
-          "https://example.com/river-view2.jpg",
+        imagePaths: [
+          "river-view1.jpg",
+          "river-view2.jpg",
         ],
         videos: ["https://example.com/river-view.mp4"],
       },

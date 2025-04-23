@@ -3,6 +3,7 @@ import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
 import { TRPCReactProvider } from "~/trpc/react";
 import IntercomProvider from "./_components/intercom";
+import SplashScreen from "./_components/splash_screen";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -18,6 +19,7 @@ export default function RootLayout({
       <body className="flex flex-col min-h-screen">
         <TRPCReactProvider>
           <IntercomProvider />
+          <SplashScreen />
           {children}
         </TRPCReactProvider>
       </body>

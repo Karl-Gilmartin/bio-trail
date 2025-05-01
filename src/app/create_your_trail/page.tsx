@@ -372,20 +372,37 @@ export default function CreateYourTrailPage() {
 
           {!isPinVerified ? (
             <div className="bg-white p-6 rounded-lg shadow-md">
-              <h2 className="text-2xl font-semibold mb-4">Enter Access PIN</h2>
-              <input
-                type="text"
-                value={pin}
-                onChange={(e) => setPin(e.target.value)}
-                className="w-full p-2 border rounded mb-4"
-                placeholder="Enter your PIN"
-              />
-              <button
-                onClick={() => verifyPin.mutate({ pin })}
-                className="w-full bg-cambridgeBlue text-white py-2 rounded hover:bg-darkSlateGray transition-colors"
-              >
-                Verify PIN
-              </button>
+              <div className="flex items-center gap-2 mb-4">
+                <h2 className="text-2xl font-semibold">Enter Access PIN</h2>
+                <div className="relative group">
+                  <button
+                    type="button"
+                    className="text-gray-500 hover:text-gray-700"
+                    aria-label="Help"
+                  >
+                    ?
+                  </button>
+                  <div className="absolute right-0 top-full mt-2 p-2 bg-gray-800 text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 w-64 z-50">
+                    The PIN is issued upon request please fill out contact form in the contact page.
+                  </div>
+                </div>
+              </div>
+              {/* tooltip */}
+              <div className="relative">
+                <input
+                  type="text"
+                  value={pin}
+                  onChange={(e) => setPin(e.target.value)}
+                  className="w-full p-2 border rounded mb-4"
+                  placeholder="Enter your PIN"
+                />
+                <button
+                  onClick={() => verifyPin.mutate({ pin })}
+                  className="w-full bg-cambridgeBlue text-white py-2 rounded hover:bg-darkSlateGray transition-colors"
+                >
+                  Verify PIN
+                </button>
+              </div>
             </div>
           ) : (
             <div className="bg-white p-6 rounded-lg shadow-md">

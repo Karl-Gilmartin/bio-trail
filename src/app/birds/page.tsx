@@ -134,6 +134,12 @@ export default function BirdSightingsPage() {
             <h1 className="text-3xl font-bold mb-2">Record Bird Sighting</h1>
             <p className="text-gray-600 mb-6">Share your bird observations with the community</p>
 
+            <div className="mb-4 p-4 bg-orange-50 border border-orange-200 rounded-lg">
+          <p className="text-sm text-orange-800">
+            Note: When you share a bird sighting, the location will be visible to all users. Please ensure you're comfortable with sharing this information publicly.
+          </p>
+        </div>
+
             {/* Location Accuracy Message */}
             <div className="bg-blue-50 border border-blue-200 rounded-md p-4 mb-6">
               <div className="flex items-start">

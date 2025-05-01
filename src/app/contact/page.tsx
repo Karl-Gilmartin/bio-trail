@@ -74,14 +74,14 @@ export default function ContactPage() {
                   </p>
 
                   {/* file icon to download the PDF guide */}
-                  <a 
+                  {/* <a 
                     href="/bioTrailGuide.pdf" 
                     download 
                     className="text-darkSlateGray hover:text-cambridgeBlue transition-colors flex items-center gap-2"
                   >
                     <FaFileDownload className="w-4 h-4" />
                     Download PDF Guide
-                  </a>
+                  </a> */}
                 </div>
 
                 <div className="pt-4 border-t">

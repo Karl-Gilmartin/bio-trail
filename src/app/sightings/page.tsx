@@ -13,19 +13,19 @@ export default function SightingsPage() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   // Get university ID from name
-  const { data: universityData } = api.universities.getByName.useQuery(
+  const { data: universityData, isLoading: isLoadingUniversity } = api.universities.getByName.useQuery(
     { name: selectedUniversity },
     { enabled: !!selectedUniversity }
   );
 
   // Get all birds
-  const { data: birdsData } = api.birds.getAll.useQuery(
+  const { data: birdsData, isLoading: isLoadingBirds } = api.birds.getAll.useQuery(
     undefined,
     { enabled: !!selectedUniversity }
   );
 
   // Get sightings for selected university
-  const { data: sightingsData } = api.birds.getSightingsByUniversity.useQuery(
+  const { data: sightingsData, isLoading: isLoadingSightings } = api.birds.getSightingsByUniversity.useQuery(
     { universityId: universityData?.data?.id ?? 0 },
     { 
       enabled: !!universityData?.data?.id,
@@ -49,9 +49,14 @@ export default function SightingsPage() {
               Select University
             </label>
             <UniversityDropdown onSelect={setSelectedUniversity} />
+            {isLoadingUniversity && (
+              <div className="mt-2 text-sm text-gray-500">Loading university data...</div>
+            )}
           </div>
 
-          {birdsData?.data && (
+          {isLoadingBirds ? (
+            <div className="mt-2 text-sm text-gray-500">Loading bird list...</div>
+          ) : birdsData?.data && (
             <div>
               <label className="block text-sm font-medium mb-2">
                 Filter by Bird Type
@@ -72,7 +77,11 @@ export default function SightingsPage() {
           )}
         </div>
 
-        {sightingsData && sightingsData.length > 0 ? (
+        {isLoadingSightings ? (
+          <div className="flex justify-center items-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+          </div>
+        ) : sightingsData && sightingsData.length > 0 ? (
           <div className="overflow-x-auto">
             <table className="min-w-full bg-white border border-gray-200 rounded-lg">
               <thead className="bg-gray-50">

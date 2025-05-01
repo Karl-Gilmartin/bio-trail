@@ -26,9 +26,9 @@ export default async function Home() {
                 Welcome to BioTrail 👋, your guide to exploring university nature trails 
                 and discovering local wildlife. Start your adventure today!
               </p>
-              <p className="text-gray-600 italic">
+              {/* <p className="text-gray-600 italic">
                 Created by <span className="font-medium">Karl</span>
-              </p>
+              </p> */}
             </div>
 
             {/* Right Column - Image and CTA */}
